@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from "react";
+import logo from "./logo.svg";
+import { ErrorBoundary } from "react-error-boundary";
+import "./App.css";
+import { fetchInvoice } from "./InvoiceAPI";
+
+let invoice;
+let error;
+
+const invoicePromise = fetchInvoice().then(
+  (inv) => {
+    invoice = inv;
+  },
+  (err) => {
+    error = err;
+  }
+);
+
+const InvoiceInfo = () => {
+  if (error) {
+    throw error;
+  }
+  if (!invoice) {
+    throw invoicePromise;
+  }
+  return <div>{invoice.date}</div>;
+};
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ErrorBoundary fallback={<div>Sorry something went wrong</div>}>
+        <Suspense fallback={<div>Loading data...</div>}>
+          <InvoiceInfo />
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }
