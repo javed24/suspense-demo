@@ -1,6 +1,6 @@
 # React Suspense
 
-Demo for lunch & learn session on React suspense.
+Demo session on React suspense.
 
 # Getting Started with Create React App
 
